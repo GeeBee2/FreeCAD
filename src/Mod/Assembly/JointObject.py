@@ -1250,12 +1250,13 @@ class ViewProviderJoint:
         action.triggered.connect(lambda: self.editJoint(vobj))
         return False
 
+    def getTransactionText(self):
+        return None
+
     def doubleClicked(self, vobj):
         return self.editJoint(vobj)
 
     def editJoint(self, vobj):
-        App.ActiveDocument.abortTransaction()  # Close the auto-transaction
-
         task = Gui.Control.activeTaskDialog()
         if task:
             task.reject()
@@ -1515,6 +1516,12 @@ class ViewProviderGroundedJoint:
     def __init__(self, obj):
         """Set this object to the proxy object of the actual view provider"""
         obj.Proxy = self
+
+    def getTransactionText(self):
+        return None
+
+    def doubleClicked(self, vobj):
+        return True
 
     def attach(self, vobj):
         """Setup the scene sub-graph of the view provider, this method is mandatory"""

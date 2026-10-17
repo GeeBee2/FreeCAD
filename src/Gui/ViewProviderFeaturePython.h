@@ -71,6 +71,7 @@ public:
     ValueT unsetEdit(int ModNum);
     ValueT setEditViewer(View3DInventorViewer*, int ModNum);
     ValueT unsetEditViewer(View3DInventorViewer*);
+    ValueT getTransactionText(std::string& text) const;
     ValueT doubleClicked();
     bool setupContextMenu(QMenu* menu);
 
@@ -163,6 +164,7 @@ private:
     FC_PY_ELEMENT(unsetEdit) \
     FC_PY_ELEMENT(setEditViewer) \
     FC_PY_ELEMENT(unsetEditViewer) \
+    FC_PY_ELEMENT(getTransactionText) \
     FC_PY_ELEMENT(doubleClicked) \
     FC_PY_ELEMENT(setupContextMenu) \
     FC_PY_ELEMENT(attach) \
@@ -711,6 +713,18 @@ protected:
     }
 
 public:
+    const char* getTransactionText() const override
+    {
+        switch (imp->getTransactionText(transactionText)) {
+            case ViewProviderFeaturePythonImp::Accepted:
+                return transactionText.c_str();
+            case ViewProviderFeaturePythonImp::Rejected:
+                return nullptr;
+            default:
+                return ViewProviderT::getTransactionText();
+        }
+    }
+
     void setupContextMenu(QMenu* menu, QObject* recipient, const char* member) override
     {
         if (!imp->setupContextMenu(menu)) {
@@ -762,6 +776,7 @@ private:
     ViewProviderFeaturePythonImp* imp;
     App::PropertyPythonObject Proxy;
     mutable std::string defaultMode;
+    mutable std::string transactionText;
     std::string viewerMode;
     bool _attached {false};
 };

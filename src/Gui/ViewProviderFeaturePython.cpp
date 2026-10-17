@@ -580,6 +580,31 @@ ViewProviderFeaturePythonImp::ValueT ViewProviderFeaturePythonImp::unsetEditView
     return Rejected;
 }
 
+ViewProviderFeaturePythonImp::ValueT
+ViewProviderFeaturePythonImp::getTransactionText(std::string& text) const
+{
+    FC_PY_CALL_CHECK(getTransactionText)
+
+    Base::PyGILStateLocker lock;
+    try {
+        Py::Object ret(Base::pyCall(py_getTransactionText.ptr()));
+        if (ret.isNone()) {
+            return Rejected;
+        }
+        text = Py::String(ret).as_std_string("utf-8");
+        return Accepted;
+    }
+    catch (Py::Exception&) {
+        if (PyErr_ExceptionMatches(PyExc_NotImplementedError)) {
+            PyErr_Clear();
+            return NotImplemented;
+        }
+        Base::PyException e;
+        e.reportException();
+    }
+    return NotImplemented;
+}
+
 ViewProviderFeaturePythonImp::ValueT ViewProviderFeaturePythonImp::doubleClicked()
 {
     FC_PY_CALL_CHECK(doubleClicked)

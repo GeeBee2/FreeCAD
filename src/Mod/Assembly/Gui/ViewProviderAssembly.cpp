@@ -326,6 +326,7 @@ bool ViewProviderAssembly::setEdit(int mode)
             )
         );
 
+        QObject::disconnect(workbenchConnection);
         workbenchConnection = QObject::connect(
             Gui::getMainWindow(),
             &Gui::MainWindow::workbenchActivated,
@@ -342,6 +343,7 @@ bool ViewProviderAssembly::setEdit(int mode)
 void ViewProviderAssembly::unsetEdit(int mode)
 {
     if (mode == ViewProvider::Default) {
+        QObject::disconnect(workbenchConnection);
         canStartDragging = false;
         partMoving = false;
         docsToMove.clear();
